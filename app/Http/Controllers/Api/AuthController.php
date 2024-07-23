@@ -13,20 +13,29 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(Request $request) : JsonResponse {
-        try{
+    public function login(Request $request): JsonResponse
+    {
+        try {
             //check if nisn exists
             $user = User::query()
                 ->where('email', $request->nisn . "@student.com")
                 ->firstOrFail();
-
             //check password
             $attempt = $user
-                ->attempt
-                ->first(fn($att) => Hash::check($request->password, $att->password));
-            
+                ->attempt()
+                ->whereHas('exam')
+                ->get()
+                ->first(fn ($att) => Hash::check($request->password, $att->password));
+            if (!$attempt) {
+                $attempt = $user
+                    ->attempt()
+                    ->withTrashed()
+                    ->get()
+                    ->first(fn ($att) => Hash::check($request->password, $att->password));
+            }
+
             //if password incorrect, throw error
-            if($attempt == null) throw(new Exception());
+            // if ($attempt == null) throw (new Exception());
 
             //login user
             Auth::loginUsingId($user->id);
@@ -36,10 +45,9 @@ class AuthController extends Controller
             return response()->json([
                 'user' => $user,
                 'token' => $user->createToken('authToken')->plainTextToken,
-                'attempt' => $attempt
+                'attempt' => $attempt->deleted_at == null ? $attempt : null
             ]);
-
-        }catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'nisn atau password salah',
                 'status' => false
@@ -47,7 +55,8 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request) : JsonResponse {
+    public function logout(Request $request): JsonResponse
+    {
         $request->user()->tokens()->delete();
         return response()->json(['message' => 'Logged out successfully']);
     }

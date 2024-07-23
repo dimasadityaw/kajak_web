@@ -26,14 +26,15 @@ class QuestionImport implements ToCollection
         // DB::beginTransaction();
         // try {
         foreach ($rows as $r => $row) {
-            //skip first row
-            if ($r == 0) {
+            //skip title row
+            if ($r <= 1 || $row[0] == null || $row[0] == '') {
                 continue;
             }
 
             $question = new Question();
             $question->exam_id = $this->exam->id;
             $question->question = $row[0];
+            $question->explanation = $row[6];
             $question->save();
 
             for ($i = 2; $i < 6; $i++) {

@@ -52,6 +52,7 @@ class QuestionController extends Controller
             $question = new Question();
             $question->exam_id = $exam->id;
             $question->question = $request->question;
+            $question->explanation = $request->explanation;
             $question->save();
 
             foreach ($request->answer as $i => $postedAnswer) {
@@ -106,6 +107,7 @@ class QuestionController extends Controller
         try {
             $question->exam_id = $exam->id;
             $question->question = $request->question;
+            $question->explanation = $request->explanation;
             $question->save();
 
             foreach ($question->answer as $i => $answer) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -11,6 +12,7 @@ class UserController extends Controller
     private $accessAliases = [
         'teacher' => "lecturer",
         'user' => "student",
+        'student' => "student",
         'lecturer' => 'lecturer'
     ];
     /**
@@ -56,7 +58,7 @@ class UserController extends Controller
         //validate user input
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:App\Models\User,email',
             'password' => 'required'
         ]);
 
@@ -89,12 +91,13 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(User $user)
+    public function edit(User $user, Request $request)
     {
+        $exam = $request->has('exam') ? Exam::find($request->exam) : null;
         if ($user->role == "lecturer") {
             return view('pages.lecturer.form', compact('user'));
         } else {
-            return view('pages.lecturer.form-user', compact('user'));
+            return view('pages.lecturer.form-user', compact('user', 'exam'));
         }
     }
 
@@ -117,10 +120,10 @@ class UserController extends Controller
 
         if (auth()->user()->role == 'admin') {
             $user->name = $request->name;
-            
-            if(str_contains($request->email, '@')){
+
+            if (str_contains($request->email, '@')) {
                 $user->email = $request->email;
-            }else{
+            } else {
                 $user->email = $request->email . '@student.com';
                 $user->nisn = $request->email;
             }
@@ -130,7 +133,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }
 
-        
+
 
         $user->save();
 
@@ -139,7 +142,11 @@ class UserController extends Controller
         if (auth()->user()->role != 'admin') {
             return redirect()->back()->with('success', 'Berhasil memperbarui data');
         } else {
-            return redirect()->route('user.index', ['type' => $userType])->with('success', 'Berhasil memperbarui data');
+            if($request->has('exam')){
+                return redirect()->route('exam.user', $request->exam)->with('success', 'Berhasil memperbarui data');
+            }else{
+                return redirect()->route('user.index', ['type' => $userType])->with('success', 'Berhasil memperbarui data');
+            }
         }
     }
 

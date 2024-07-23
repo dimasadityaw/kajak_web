@@ -51,7 +51,7 @@
                                                     {{ method_field('DELETE') }}
                                                     @csrf
                                                     <button class="btn btn-icon btn-danger"
-                                                        onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')"
+                                                        onclick="return confirm('Apakah anda yakin ingin menghapus data ini ?')"
                                                         type="submit">
                                                         <i class="fas fa-trash mr-2"></i> Hapus
                                                     </button>

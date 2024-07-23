@@ -14,11 +14,12 @@ class QuestionResource extends JsonResource
      */
     public function toArray($request)
     {
-        if($this->question == null) dd($this);
+        if ($this->question == null) dd($this);
         return [
             'answer' => $this->question->answer->shuffle(),
             'question' => $this->question->unsetRelation('answer'),
-            'current_answer' => $this->answer
+            'current_answer' => $this->answer,
+            'explanation' => $this->question->explanation,
         ];
     }
 }

@@ -17,19 +17,10 @@
                     <div class="card-header">
                         <h4>Detail Ujian</h4>
                         <div class="card-header-action">
+                            <a href="{{ asset('docs/template_soal_ujian.xlsx') }}" class="btn btn-icon btn-primary">
+                                <i class="fas fa-download mr-2"></i> Download Template Soal
+                            </a>
 
-                            <form action="{{ route('exam.deleteall', [$exam]) }}" method="POST">
-                                {{ method_field('DELETE') }}
-                                @csrf
-                                <a href="{{ asset('docs/template_soal_ujian.xlsx') }}" class="btn btn-icon btn-primary">
-                                    <i class="fas fa-download mr-2"></i> Download Template Soal
-                                </a>
-                                <button class="btn btn-icon btn-danger"
-                                    onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')" type="submit">
-                                    <i class="fas fa-trash mr-2"></i> Hapus Semua Soal
-                                </button>
-
-                            </form>
                         </div>
                     </div>
                     <div class="card-body">
@@ -45,7 +36,8 @@
                                                 <label>Upload File Soal</label>
                                                 <input type="file"
                                                     class="form-control-file @error('file') is-invalid @enderror"
-                                                    name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+                                                    name="file"
+                                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                                     required>
                                                 @error('file')
                                                     <div class="invalid-feedback">
@@ -56,7 +48,7 @@
                                         </div>
 
                                         <div class="col-md-6">
-                                            <button class="btn btn-icon btn-primary mt-4" type="submit">
+                                            <button class="btn btn-icon btn-info mt-4" type="submit">
                                                 <i class="fas fa-upload mr-2"></i> Upload
                                             </button>
                                         </div>
@@ -102,7 +94,8 @@
                                                 <label>Upload File Data Peserta</label>
                                                 <input type="file"
                                                     class="form-control-file @error('file') is-invalid @enderror"
-                                                    name="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                                    name="file"
+                                                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                                     required>
                                                 @error('file')
                                                     <div class="invalid-feedback">
@@ -111,9 +104,9 @@
                                                 @enderror
                                             </div>
                                         </div>
-    
+
                                         <div class="col-md-6">
-                                            <button class="btn btn-icon btn-primary mt-4" type="submit">
+                                            <button class="btn btn-icon btn-info mt-4" type="submit">
                                                 <i class="fas fa-upload mr-2"></i> Upload
                                             </button>
                                         </div>
@@ -127,9 +120,19 @@
                     <div class="card-header">
                         <h4>Daftar Soal</h4>
                         <div class="card-header-action">
-                            <a href="{{ route('exam.question.create', $exam) }}" class="btn btn-icon btn-primary">
-                                <i class="fas fa-plus mr-1"></i> Tambah soal satuan
-                            </a>
+
+                            <form action="{{ route('exam.deleteall', [$exam]) }}" method="POST">
+                                {{ method_field('DELETE') }}
+                                @csrf
+                                <a href="{{ route('exam.question.create', $exam) }}" class="btn btn-icon btn-primary">
+                                    <i class="fas fa-plus mr-1"></i> Tambah soal satuan
+                                </a>
+                                <button class="btn btn-icon btn-danger"
+                                    onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')" type="submit">
+                                    <i class="fas fa-trash mr-2"></i> Hapus Semua Soal
+                                </button>
+
+                            </form>
                         </div>
                     </div>
                     <div class="card-body">
@@ -158,7 +161,7 @@
                                                         <i class="fas fa-pencil-alt mr-2"></i> Edit
                                                     </a>
                                                     <button class="btn btn-sm btn-icon btn-danger"
-                                                        onclick="confirm('Apakah anda yakin ingin menghapus data ini ?')"
+                                                        onclick="return confirm('Apakah anda yakin ingin menghapus data ini ?')"
                                                         type="submit">
                                                         <i class="fas fa-trash mr-2"></i> Hapus
                                                     </button>

@@ -47,11 +47,12 @@
                                                 {{ $e->score ?? 0 }} / 100
                                             </td>
                                             <td>
-                                                <a class="btn btn-icon btn-danger" href="{{ route('attempt.delete', $e) }}">
+                                                <a class="btn btn-icon btn-danger" onclick="return confirm('Apakah anda yakin ingin menghapus akses pengguna ini ?')" 
+                                                    href="{{ route('attempt.delete', $e) }}">
                                                     <i class="fas fa-ban mr-2"></i> Hapus Akses
                                                 </a>
                                                 <a class="btn btn-icon btn-warning"
-                                                    href="{{ route('user.edit', $e->user) }}">
+                                                    href="{{ route('user.edit', $e->user) }}?exam={{ $exam->id }}">
                                                     <i class="fas fa-pencil-alt mr-2"></i> Edit Password
                                                 </a>
                                             </td>

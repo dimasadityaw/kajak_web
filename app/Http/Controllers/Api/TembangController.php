@@ -21,6 +21,11 @@ class TembangController extends Controller
             ->with('child')
             ->get();
 
+        $sastra->transform(function ($s) {
+            $s->image = $s->image != null ? asset('storage/' . $s->image) : null;
+            return $s;
+        });
+
         return response()->json($sastra);
     }
 

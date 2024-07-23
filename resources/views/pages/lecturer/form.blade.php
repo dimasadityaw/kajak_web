@@ -13,8 +13,13 @@
             </div>
 
             <div class="section-body">
+                <a href="{{ route('user.index') }}?type={{ $user->role ?? 'lecturer' }}"
+                    class="btn btn-primary text-white btn-icon mb-3">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Kembali
+                </a>
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <h4>{{ isset($user) ? 'Edit Data Guru' : 'Buat Data Guru Baru' }}</h4>

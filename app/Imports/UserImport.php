@@ -23,41 +23,47 @@ class UserImport implements ToCollection
 
     public function collection(Collection $collection)
     {
-        $collection->slice(1)->each(function ($el) {
-            $rowUser = $this->transformToObject($el);
-            $user = User::query()
-                ->where(function ($q) use ($rowUser) {
-                    $q->where('nisn', $rowUser->nisn)
-                        ->orWhere('email', $rowUser->nisn . '@student.com');
-                })
-                ->withTrashed()
-                ->first();
+        $collection
+            ->slice(2)
+            ->filter(fn ($c) => $c[0] != null)
+            ->each(function ($el, $key) {
+                $rowUser = $this->transformToObject($el);
+                $user = User::query()
+                    ->where(function ($q) use ($rowUser) {
+                        $q->where('nisn', $rowUser->nisn)
+                            ->orWhere('email', $rowUser->nisn . '@student.com');
+                    })
+                    ->withTrashed()
+                    ->first();
 
 
-            //save user if not yet save
-            if (!$user) {
-                $rowUser->email = $rowUser->nisn . '@student.com';
-                $rowUser->role = 'student';
-                $rowUser->save();
+                //save user if not yet save
+                if (!$user) {
+                    $rowUser->email = $rowUser->nisn . '@student.com';
+                    $rowUser->role = 'student';
+                    $rowUser->save();
 
-                $user = $rowUser;
-            }
+                    $user = $rowUser;
+                }
 
-            if ($user->trashed()) {
-                $user->restore();
-            }
+                if ($user->trashed()) {
+                    $user->restore();
+                }
 
-            //save attempt
-            $attempt = Attempt::where('user_id', $user->id)->first();
-            if (!$attempt) {
-                $attempt = new Attempt();
-                $attempt->exam_id = $this->exam->id;
-                $attempt->user_id = $user->id;
-                $attempt->password = $user->password;
-                $attempt->started_at = now();
-                $attempt->save();
-            }
-        });
+                //save attempt
+                $attempt = Attempt::query()
+                    ->where('user_id', $user->id)
+                    ->where('exam_id', $this->exam->id)->first();
+                if (!$attempt) {
+                    $attempt = new Attempt();
+                    $attempt->exam_id = $this->exam->id;
+                    $attempt->user_id = $user->id;
+                    $attempt->password = $user->password;
+                    $attempt->started_at = now();
+                    $attempt->save();
+                }
+                // }
+            });
     }
 
     private function transformToObject(Collection $el): User

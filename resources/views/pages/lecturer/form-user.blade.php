@@ -1,14 +1,16 @@
 @extends('layouts.app')
 
-@section('title', 'Guru Baru')
+
 
 @push('style')
     <!-- CSS Libraries -->
 @endpush
 
 @php
-    $role = auth()->user()->role == 'admin' ? 'Pengguna' : 'Siswa';
+    $role = 'Murid';
 @endphp
+
+@section('title', isset($user) ? 'Edit Data ' . $role : 'Buat Data ' . $role . ' Baru')
 
 @section('main')<div class="main-content">
         <section class="section">
@@ -17,15 +19,31 @@
             </div>
 
             <div class="section-body">
+                @if (isset($exam) && $exam != null)
+                    <a href="{{ route('exam.user', $exam) }}" class="btn btn-primary text-white btn-icon mb-3">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+                @else
+                    <a href="{{ route('user.index') }}?type={{ $user->role }}"
+                        class="btn btn-primary text-white btn-icon mb-3">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Kembali
+                    </a>
+                @endif
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
                                 <h4>{{ isset($user) ? 'Edit Data ' . $role : 'Buat Data ' . $role . ' Baru' }}</h4>
                             </div>
                             <div class="card-body">
                                 <form method="POST"
+                                    @if (isset($exam) && $exam != null)
+                                    action="{{ !isset($user) ? route('user.store', ['exam' => $exam->id]) : route('user.update', [$user, 'exam' => $exam->id]) }}">
+                                    @else
                                     action="{{ !isset($user) ? route('user.store') : route('user.update', $user) }}">
+                                    @endif
                                     @csrf
                                     @if (isset($user))
                                         {{ method_field('PUT') }}
@@ -46,12 +64,12 @@
                                     {{-- input email --}}
                                     <div class="form-group">
                                         <label
-                                            for="name">{{ isset($user) && $user->role == "student" ? 'NISN' : 'Email' }}</label>
-                                        <input type="{{ isset($user) && $user->role == "student" ? 'text' : 'email' }}"
+                                            for="name">{{ isset($user) && $user->role == 'student' ? 'NISN' : 'Email' }}</label>
+                                        <input type="{{ isset($user) && $user->role == 'student' ? 'text' : 'email' }}"
                                             name="email" id="email"
                                             class="form-control @error('email') is-invalid @enderror" required
                                             @if (auth()->user()->role != 'admin') readonly="readonly" @endif
-                                            @if (isset($user)) value="{{ $user->role == "student" ? $user->nisn : $user->email }}" @endif>
+                                            @if (isset($user)) value="{{ $user->role == 'student' ? $user->nisn : $user->email }}" @endif>
                                         @error('email')
                                             <div class="invalid-feedback">
                                                 {{ $message }}
@@ -93,7 +111,7 @@
 @push('scripts')
     <!-- JS Libraies -->
     <script>
-        @if($user->role == 'student')
+        @if ($user->role == 'student')
             $('#email').attr('maxlength', 11)
             $('#email').on('keypress', (evt) => {
                 if (evt.which < 48 || evt.which > 57) evt.preventDefault();

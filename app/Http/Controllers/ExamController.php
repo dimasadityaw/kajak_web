@@ -122,6 +122,7 @@ class ExamController extends Controller
         $request->validate([
             'file' => 'required|file|mimes:xls,xlsx,csv|max:2048',
         ]);
+        $exam->question()->delete();
         Excel::import(new QuestionImport($exam), $request->file('file'));
         return redirect()->back()->with('success', 'Berhasil mengimport soal');
         // dd($request->all());

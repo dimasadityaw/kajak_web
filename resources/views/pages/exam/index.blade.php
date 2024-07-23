@@ -26,7 +26,7 @@
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
-                                    <tr>
+                                    <tr class="text-center">
                                         <th>No</th>
                                         <th>Nama</th>
                                         <th>Kode Ujian</th>
@@ -37,22 +37,23 @@
                                 <tbody>
                                     @foreach ($exam as $e)
                                         <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $e->name }}</td>
-                                            <td>
+                                            <td class="text-center">{{ $loop->iteration }}</td>
+                                            <td class="text-center">{{ $e->name }}</td>
+                                            <td class="text-center">
                                                 <div class="badge badge-primary">{{ $e->code }}</div>
                                             </td>
-                                            <td>{{ $e->attempt->count() }}</td>
-                                            <td>
-                                                <a href="{{ route('exam.show', $e) }}" class="btn btn-icon btn-primary">
-                                                    <i class="fas fa-info mr-2"></i> Detail
-                                                </a>
-                                                <a href="{{ route('exam.edit', $e) }}" class="btn btn-icon btn-warning">
-                                                    <i class="fas fa-pencil-alt mr-2"></i> Edit
-                                                </a>
+                                            <td class="text-center">{{ $e->attempt->count() }}</td>
+                                            <td class="text-center">
+
                                                 <form action="{{ route('exam.destroy', $e) }}" method="POST">
                                                     {{ method_field('DELETE') }}
                                                     @csrf
+                                                    <a href="{{ route('exam.show', $e) }}" class="btn btn-icon btn-primary">
+                                                        <i class="fas fa-info mr-2"></i> Detail
+                                                    </a>
+                                                    <a href="{{ route('exam.edit', $e) }}" class="btn btn-icon btn-warning">
+                                                        <i class="fas fa-pencil-alt mr-2"></i> Edit
+                                                    </a>
                                                     <button class="btn btn-icon btn-danger" type="submit">
                                                         <i class="fas fa-trash mr-2"></i> Hapus
                                                     </button>
